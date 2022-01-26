@@ -1,7 +1,9 @@
 //Global variables that allow me to count wins and output the correct end result.
 let playerWin = 0, compWin = 0;
+const WINSTATE = 5;
 
 //computer play function. outputs one of the 3 options at random
+let compThrow = document.querySelector('.computer_throw');
 
 let computerPlay = ()=>
 {
@@ -21,6 +23,8 @@ let computerPlay = ()=>
     {
         selected = "scissors";
     }
+
+    compThrow.innerHTML = selected;
 
     return selected;
 }
@@ -99,37 +103,101 @@ let playRound = (compSelection, playerSelection)=>
     return state;
 }
 
-//game function plays the game five times, but also gets player input
+//create buttons
+const rock_button = document.querySelector('#rock_button');
+const paper_button = document.querySelector('#paper_button');
+const scissors_button = document.querySelector('#scissors_button');
 
-let game = ()=>
+//updates the results div
+let results_div = document.querySelector('.results');
+
+//updates score cards
+let player_score = document.querySelector('.score_text_player');
+let computer_score = document.querySelector('.score_text_computer');
+
+let playerThrow = document.querySelector('.player_throw');
+
+rock_button.addEventListener('click', () =>
 {
-    for (let i = 0; i < 5; i++)
-    {
-        console.log("/******** Game "+ (i+1) + " of 5********/");
-        console.log("\n\nWhatchya throwin'?");
-        let selection = prompt();
+    playerThrow.innerHTML = "rock";
+    let gameState = playRound(computerPlay(), "rock");
+    results_div.innerHTML = gameState;
+    checkGame();
+});
 
-        console.log(playRound(computerPlay(), selection));
+paper_button.addEventListener('click', () =>
+{
+    playerThrow.innerHTML = "paper";
+    let gameState = playRound(computerPlay(), "paper");
+    results_div.innerHTML = gameState;
+    checkGame();
+});
+
+scissors_button.addEventListener('click', () =>
+{
+    playerThrow.innerHTML = "scissors";
+    let gameState = playRound(computerPlay(), "scissors");
+    results_div.innerHTML = gameState;
+    checkGame();
+});
+
+const reset_button = document.querySelector('#reset_button');
+reset_button.setAttribute('disabled', 'true');
+
+reset_button.addEventListener('click', () =>
+{
+    playerWin = 0;
+    compWin = 0;
+
+    rock_button.classList.toggle('disabled');
+    rock_button.removeAttribute('disabled');
+
+    paper_button.classList.toggle('disabled');
+    paper_button.removeAttribute('disabled');
+
+    scissors_button.classList.toggle('disabled');
+    scissors_button.removeAttribute('disabled');
+
+    reset_button.classList.toggle('disabled');
+    reset_button.setAttribute('disabled', 'true');
+
+    player_score.innerHTML = "";
+    computer_score.innerHTML = "";
+    results_div.innerHTML = "";
+
+    playerThrow.innerHTML = "";
+    compThrow.innerHTML = "";
+})
+
+//Updates the scoreboard and if either player or computer hit 5 wins, buttons are disabled.
+
+let checkGame = ()=>
+{
+    player_score.innerHTML = playerWin;
+    computer_score.innerHTML = compWin;
+
+    if(playerWin == WINSTATE || compWin == WINSTATE)
+    {
+        rock_button.classList.toggle('disabled');
+        rock_button.setAttribute('disabled', 'true');
+
+        paper_button.classList.toggle('disabled');
+        paper_button.setAttribute('disabled', 'true');
+
+        scissors_button.classList.toggle('disabled');
+        scissors_button.setAttribute('disabled', 'true');
+
+        reset_button.classList.toggle('disabled');
+        reset_button.removeAttribute('disabled');
     }
 
-    console.log("\n\nResults:\nPlayer: "+playerWin+" vs. Computer: " +compWin);
-
-    if(playerWin > compWin)
+    if(playerWin == WINSTATE)
     {
-        console.log("The Player Wins!");
+        results_div.innerHTML = "The Player Wins!";
     }
 
-    if(compWin>playerWin)
+    if(compWin==WINSTATE)
     {
-        console.log("The Computer Wins!");
+        results_div.innerHTML = "The Computer Wins!";
     }
-
-    if(compWin == playerWin)
-    {
-        console.log("It's a Draw!");
-    }
-
-    return "\n\nThat's all folks!!"
 }
-
-console.log(game());
